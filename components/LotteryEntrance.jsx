@@ -7,9 +7,11 @@ import { ethers } from "ethers"
 
 export default function LotteryEntrance() {
     const { chainId: chainIdHex, isWeb3Enabled } = useMoralis()
-    const chainId = parseInt(chainIdHex, 16)
-    const raffleAddress = chainIdHex in contractAddresses ? contractAddresses[chainId][0] : null
-
+    const chainId = parseInt(chainIdHex)
+    const raffleAddress = chainId in contractAddresses ? contractAddresses[chainId][0] : null
+    // console.log(`chainId: ${chainId}`)
+    // console.log(`raffleAddress: ${raffleAddress}`)
+    const [entranceFee, setEntranceFee] = useState("0")
     // const { runContractFunction: enterRaffle } = useWeb3Contract({
     //     abi: abi,
     //     contractAddress: raffleAddress,
@@ -29,12 +31,17 @@ export default function LotteryEntrance() {
         if (isWeb3Enabled) {
             // try to read the raffle entrance fee
             async function updateUI() {
-                const entranceFeeFromContract = await getEntranceFee()
-                console.log(entranceFeeFromContract)
+                const entranceFeeFromCall = (await getEntranceFee()).toString()
+                setEntranceFee(entranceFeeFromCall)
+                console.log(entranceFeeFromCall)
             }
             updateUI()
         }
     }, [isWeb3Enabled])
 
-    return <div>Hi Lottery</div>
+    return (
+        <div>
+            Hi Lottery! <div> {entranceFee} </div>
+        </div>
+    )
 }
